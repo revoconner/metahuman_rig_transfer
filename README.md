@@ -1,7 +1,13 @@
-# metahuman_rig_transfer
+# Metahuman Rig Transfer Script
 A series of python scripts to modify the metahuman rig into a new one for Maya.
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE
+
+## Table of Content
+1. [Prerequisite](https://github.com/revoconner/metahuman_rig_transfer#prerequisite)
+2. [Instruction](https://github.com/revoconner/metahuman_rig_transfer#instructions)
+3. [Optional Instruction](https://github.com/revoconner/metahuman_rig_transfer#optional)
+4. [License](https://github.com/revoconner/metahuman_rig_transfer#license)
 
 ## PREREQUISITE:
 (written in Py 2.7)
