@@ -3,10 +3,10 @@ import maya.api.OpenMaya as om
 import os 
 
 #Enter Wrapped Head Mesh Name below
-enter_wrapped_mesh_name = "Tal_UV_BS_Head"
+enter_wrapped_mesh_name = "NewHead"
 
 #Enter folder path below where additional scripts are stored. Do not change slash to forward slash
-folder_path = "C:\Users\Rev Oconner\Desktop\Zoe01\Maya\Journalist\scripts"
+folder_path = "C:\Maya\Journalist\scripts"
 python_folder_path = folder_path.replace("\\", "/")
 
 #Alright lets go
