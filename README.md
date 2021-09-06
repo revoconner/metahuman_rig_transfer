@@ -31,4 +31,7 @@ It's advised to save a copy of your maya file before attempting this, as it crea
 10.  You are now done, play with your new rigged head.
 
 ## Optional
-If the joints are too big for you to see how they are aligned, you can select DHI:spin_04 from the outliner, and then run the select_children_joint.py script to select all joints in the heirarchy. You can now go to the channel box and change the bone's radius to something like 0.2 instead of the original 1. 
+If the joints are too big for you to see how they are aligned, you can select DHI:spin_04 from the outliner, and then run the **select joint children.py** script to select all joints in the heirarchy. You can now go to the channel box and change the bone's radius to something like 0.2 instead of the original 1. 
+
+# License
+Not for commercial use, even if modified. Attribution not needed but is appreciated.
