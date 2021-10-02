@@ -11,23 +11,7 @@ python_folder_path = folder_path.replace("\\", "/")
 
 #Alright lets go
 
-def delete_constraint_parent():
-    cmds.select('DHIhead:spine_04')
-    children_pcontraint = cmds.listRelatives(allDescendents=True, type='parentConstraint')
-    children_scontraint = cmds.listRelatives(allDescendents=True, type='scaleConstraint')
-    pco = 0
-    while pco < len(children_pcontraint):
-        cmds.select(children_pcontraint[pco])
-        cmds.delete(children_pcontraint[pco])       
-        pco = pco + 1
 
-    pco = 0
-    while pco < len(children_scontraint):
-        cmds.select(children_scontraint[pco])
-        cmds.delete(children_scontraint[pco])        
-        pco = pco + 1
-
-#delete_constraint_parent()
 cmds.select( clear=True )
 cmds.duplicate('DHIhead:spine_04')
 
