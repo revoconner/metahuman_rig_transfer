@@ -1,5 +1,6 @@
-# Metahuman Rig Transfer Script
+# Metahuman Rig Transfer Script (Python 3 version) [Untested]
 A series of python scripts to modify the metahuman rig into a new one for Maya.
+### This branch is untested and may or may not work in Maya 2022. In case it doesn't work, start maya with Python 2 enabled and use the main branch. Use this [tutorial](https://matiascodesal.com/blog/how-to-launch-maya-2022-with-python-2-if-you-are-not-ready-for-python-3/)
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE
 
@@ -10,7 +11,7 @@ Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE
 4. [License](https://github.com/revoconner/metahuman_rig_transfer#license)
 
 ## PREREQUISITE:
-(written in Py 2.7)
+
 1. The new head to which the bones are to be rigged must share the same UV and topology as the original metahuman head. A program like R3DS Wrap will help with it. 
 2. The file you download from Metahuman will have its embeddedNodeRL4 node named after the DNA_RL file, something like Kristopher_rl or rl4Embedded_Kristofer_rl, if the name of the metahuman was Kristopher. **Change that to rigLogicNode**
 3. ![image](https://user-images.githubusercontent.com/88772846/132264485-74e9d98e-38d9-4227-ab56-1ca9fc5effd5.png)
