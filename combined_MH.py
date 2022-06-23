@@ -3,31 +3,15 @@ import maya.api.OpenMaya as om
 import os 
 
 #Enter Wrapped Head Mesh Name below
-enter_wrapped_mesh_name = "Tal_UV_BS_Head"
+enter_wrapped_mesh_name = "NewMesh"
 
 #Enter folder path below where additional scripts are stored. Do not change slash to forward slash
-folder_path = "C:\\Users\Rev Oconner\Desktop\Zoe01\Maya\Journalist\scripts"
+folder_path = "D:\ZOE01 Current\Maya\Meta_Maya\scripts\metahuman original"
 python_folder_path = folder_path.replace("\\", "/")
 
 #Alright lets go
 
-def delete_constraint_parent():
-    cmds.select('DHIhead:spine_04')
-    children_pcontraint = cmds.listRelatives(allDescendents=True, type='parentConstraint')
-    children_scontraint = cmds.listRelatives(allDescendents=True, type='scaleConstraint')
-    pco = 0
-    while pco < len(children_pcontraint):
-        cmds.select(children_pcontraint[pco])
-        cmds.delete(children_pcontraint[pco])       
-        pco = pco + 1
 
-    pco = 0
-    while pco < len(children_scontraint):
-        cmds.select(children_scontraint[pco])
-        cmds.delete(children_scontraint[pco])        
-        pco = pco + 1
-
-#delete_constraint_parent()
 cmds.select( clear=True )
 cmds.duplicate('DHIhead:spine_04')
 
@@ -55,15 +39,15 @@ def select_loop_bones():
         bone = bone_List[boneID]
         
         #run OG_Mesh file
-        exec(compile(open('%s/OG_Mesh.py'%python_folder_path, "rb").read(), '%s/OG_Mesh.py'%python_folder_path, 'exec'))
+        exec(open('%s/OG_Mesh.py'%python_folder_path).read())
         #run Get_Bone_Data file
-        exec(compile(open('%s/Get_Bone_Data.py'%python_folder_path, "rb").read(), '%s/Get_Bone_Data.py'%python_folder_path, 'exec'))
+        exec(open('%s/Get_Bone_Data.py'%python_folder_path).read())
         #run New_Mesh file
-        exec(compile(open('%s/New_Mesh.py'%python_folder_path, "rb").read(), '%s/New_Mesh.py'%python_folder_path, 'exec'))
+        exec(open('%s/New_Mesh.py'%python_folder_path).read())
         #run Vertex_Offset file
-        exec(compile(open('%s/Vertex_Offset.py'%python_folder_path, "rb").read(), '%s/Vertex_Offset.py'%python_folder_path, 'exec'))
+        exec(open('%s/Vertex_Offset.py'%python_folder_path).read())
         #run Set_Bone_data file
-        exec(compile(open('%s/Set_Bone_Data.py'%python_folder_path, "rb").read(), '%s/Set_Bone_Data.py'%python_folder_path, 'exec'))
+        exec(open('%s/Set_Bone_Data.py'%python_folder_path).read())
         
         boneID = boneID+1
 
@@ -137,7 +121,7 @@ def rl4_node_op():
     rigBoneStrippedList = []
     jto = 0
     while jto < 2563:
-        jto_ID = 'rigLogicNode.jntTranslationOutputs[%s]'%jto
+        jto_ID = 'rl4Embedded_Nasim_rl.jntTranslationOutputs[%s]'%jto
         rigBoneLists.append(cmds.connectionInfo( jto_ID, destinationFromSource = 1))
         rigBones.append(rigBoneLists[jto][0])
         rigBoneStripped = rigBones[jto][:-11]
@@ -214,7 +198,7 @@ def rl4_node_op():
         
         #create ADL node
         cmds.createNode( 'addDoubleLinear', n=adlName2 )
-        rlno = 'rigLogicNode.jntTranslationOutputs[%s]'%bone_TransformID
+        rlno = 'rl4Embedded_Nasim_rl.jntTranslationOutputs[%s]'%bone_TransformID
         adlNNI = '%s.input1'%adlName2
         
         #Connect ADL to RL4
