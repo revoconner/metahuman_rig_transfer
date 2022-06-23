@@ -1,19 +1,18 @@
 # Metahuman Rig Transfer Script
-A series of python scripts to modify the metahuman rig into a new one for Maya.
+A series of python scripts to modify the metahuman rig into a new one for Maya. For unreal use Mesh to Metahuman or houdini.
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE
 
-## Please note
-It seems a lot of people are using this project for work and commercial use. While I did not intend it to be for that, I have no recourse of stopping that so I am opening the script to be used for all project (without support). If it did help you commercially it would be great if you could donate some to help me continue writing such codes in the future. [Donate](https://paypal.me/revoconner)
 ## Table of Content
 1. [Prerequisite](https://github.com/revoconner/metahuman_rig_transfer#prerequisite)
 2. [Instruction](https://github.com/revoconner/metahuman_rig_transfer#instructions)
 3. [Optional Instruction](https://github.com/revoconner/metahuman_rig_transfer#optional)
 4. [License](https://github.com/revoconner/metahuman_rig_transfer#license)
+5. [FAQ](https://github.com/revoconner/metahuman_rig_transfer#FAQ)
 
 ## PREREQUISITE:
-(written in Py 2.7)
-#### Will not work in Maya 2022 unless it starts with python 2 enabled. By default you can use the python-3 branch (untested) or you can use this [tutorial](https://matiascodesal.com/blog/how-to-launch-maya-2022-with-python-2-if-you-are-not-ready-for-python-3/) to change Maya 2022 to start with python 2. 
+(written in Py 3.4)
+#### Will not work in Maya 2020 and below. Use py-2 branch for older maya versions 
 1. The new head to which the bones are to be rigged must share the same UV and topology as the original metahuman head. A program like R3DS Wrap will help with it. 
 2. The file you download from Metahuman will have its embeddedNodeRL4 node named after the DNA_RL file, something like Kristopher_rl or rl4Embedded_Kristofer_rl, if the name of the metahuman was Kristopher. **Change that to rigLogicNode**
 3. ![image](https://user-images.githubusercontent.com/88772846/132264485-74e9d98e-38d9-4227-ab56-1ca9fc5effd5.png)
@@ -43,11 +42,8 @@ It's advised to save a copy of your maya file before attempting this, as it crea
 If the joints are too big for you to see how they are aligned, you can select DHI:spin_04 from the outliner, and then run the **select joint children.py** script to select all joints in the heirarchy. You can now go to the channel box and change the bone's radius to something like 0.2 instead of the original 1. 
 
 # License
-Update 12/05/22: Open for all use, commercial or non commercial alike. No attribution needed. 
-Please consider donating. [Donate](https://paypal.me/revoconner)
+Update 12/06/22: Open for use under MIT license. If you continue to use this, you are bound by this new license agreement.
 
-# Notice
-As of 06/03/22 I have stopped providing any support regarding this script due to lack of time and some serious health issues. However I am putting together a FAQ for the more common issues.
 
 # FAQ
 ###  Q. Error: IOError: file <maya console> line 42:
