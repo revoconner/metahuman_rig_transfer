@@ -135,7 +135,7 @@ def create_ui():
     if cmds.window("meshSelectorWindow", exists=True):
         cmds.deleteUI("meshSelectorWindow", window=True)
     
-    window = cmds.window("meshSelectorWindow", title="Mesh Selector", widthHeight=(300, 410))
+    window = cmds.window("meshSelectorWindow", title="MHT", widthHeight=(300, 410))
     
     main_layout = cmds.columnLayout(adjustableColumn=True)
     
