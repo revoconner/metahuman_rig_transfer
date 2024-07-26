@@ -1,10 +1,9 @@
-## Recently updated by cemccabe77 in the community. Big thanks! 
-## Compatible with UE 5.4 Metahumans
-
 # Metahuman Rig Transfer Script
 Python script to modify the metahuman rig into a new one for Maya. For unreal use Mesh to Metahuman or houdini.
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE (Outdated)
+
+<img width="410" alt="image" src="https://github.com/user-attachments/assets/51ef1a70-d0f0-49a3-bab9-6279b4d2dfa9">
 
 ## Table of Content
 1. [Prerequisite](https://github.com/revoconner/metahuman_rig_transfer#prerequisite)
@@ -54,3 +53,5 @@ check DAG  paths for the meshes and bones involved. Also check namespaces.
 ### Q. kInvalidParameter: No element at given index"
 Check if the new mesh's name is correctly written in the UI and its not part of a group of heirarchy. 
 	
+## Recently updated by cemccabe77 in the community. Big thanks! 
+## Compatible with UE 5.4 Metahumans
