@@ -1,4 +1,5 @@
-## Recently updated by cemccabe77 in the community. Big thanks! Compatible with UE 5.4 Metahumans
+## Recently updated by cemccabe77 in the community. Big thanks! 
+## Compatible with UE 5.4 Metahumans
 
 # Metahuman Rig Transfer Script
 Python script to modify the metahuman rig into a new one for Maya. For unreal use Mesh to Metahuman or houdini.
@@ -13,8 +14,8 @@ Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE (Outdat
 5. [FAQ](https://github.com/revoconner/metahuman_rig_transfer#FAQ)
 
 ## PREREQUISITE:
-(written in Py 3.4)
-#### Will not work in Maya 2020 and below. Use py-2 branch for older maya versions 
+(written in Python 3)
+#### Will not work in Maya 2020 and below.
 1. The new head to which the bones are to be rigged must share the same UV and topology as the original metahuman head. A program like Wrap3D will help with it. 
 2. Select the original metahuman head mesh and go to Channel box and paste the rl4Embedded... into the text box.
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/eff75e46-011d-4afe-90d2-b810ccc72f43">
