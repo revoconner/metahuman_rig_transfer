@@ -1,0 +1,212 @@
+import maya.cmds as cmds
+import maya.api.OpenMaya as om
+from collections import OrderedDict
+import re
+
+class MetaHumanTransfer(object):
+    def __init__(self, rigHead, newHead, rlName):
+        self.hierarchyDict = OrderedDict()
+        self.rigHead = rigHead
+        self.newHead = newHead
+        self.rlName  = rlName
+
+    def initDict(self):
+        self.hierarchyDict = OrderedDict()
+
+    def run(self):
+        self.create_temp_hierarchy(self.rigHead, self.newHead)
+        self.move_rigged_hierarchy()
+        self.offset_rigged_hierarchy()
+
+    def get_rig_mesh_data(self, headNme):
+        selection_list = om.MSelectionList()
+        selection_list.add(headNme)
+        dag_path = selection_list.getDagPath(0)
+        mfn_mesh1 = om.MFnMesh(dag_path)
+        pp = mfn_mesh1.getPoints()
+        length = len(pp)
+        Q = 0
+        while Q < length:
+            points1 = mfn_mesh1.getPoint(Q, space=om.MSpace.kWorld) 
+            Q = Q+1
+        return(length, mfn_mesh1)
+
+    def get_new_mesh_data(self,headNme, minDistID):
+        sel2 = cmds.ls(headNme)
+        selection_list = om.MSelectionList ()
+        selection_list.add(sel2[0])
+        dag_path = selection_list.getDagPath (0)
+        mfn_mesh2 = om.MFnMesh(dag_path)
+        points2 = mfn_mesh2.getPoint(minDistID, space=om.MSpace.kWorld)
+        M2X, M2Y, M2Z = points2.x, points2.y, points2.z
+        return(M2X, M2Z, M2Y)
+
+    def get_bone_data(self, bone, length, mfnMsh):
+        selected = cmds.select(bone)
+        b = cmds.xform(selected,q=1,ws=1,t=1)
+        bx, by, bz = b[0], b[1], b[2]
+        BonePoint = om.MPoint(b)
+        R = 0
+        distList = []
+        while R < length:
+            distance  = BonePoint.distanceTo(mfnMsh.getPoint(R, space=om.MSpace.kWorld)) 
+            distList.append(distance)
+            R=R+1
+        minDist = (min(distList))
+        minDistID = (distList.index(min(distList)))
+        pointMin = mfnMsh.getPoint(minDistID, space=om.MSpace.kWorld)    
+        M1X, M1Y, M1Z = pointMin.x, pointMin.y, pointMin.z
+        return(bx, by, bz, M1X, M1Z, M1Y, minDistID)
+
+    def get_vertex_offset(self, M2X, M2Z, M2Y, M1X, M1Z, M1Y, bx, by, bz):
+        offsetX = M2X-(M1X-bx)
+        offsetY = M2Y-(M1Y-by)
+        offsetZ = M2Z-(M1Z-bz)
+        return(offsetX, offsetY, offsetZ)
+
+    def get_transform_offset(self, source, target, trs, axis):
+        srcVal = cmds.getAttr(source+'.'+trs+axis.upper())
+        tgtVal = cmds.getAttr(target+'.'+trs+axis.upper())
+        offset = srcVal - tgtVal
+        return offset
+
+    def set_bone_data(self, bone, offsetX, offsetY, offsetZ):
+        selected = cmds.select(bone)
+        cmds.move( offsetX, offsetY, offsetZ, absolute=True, ws=True, pcp=True )
+
+    def getHierarchyPM(self, source):
+        children = cmds.listRelatives(source, children=True, fullPath=True) or []
+        for child in children:
+            self.hierarchyDict[child] = source
+            self.getHierarchyPM(child)
+        return self.hierarchyDict
+
+    def create_temp_hierarchy(self, rigHead, newHead):
+        if cmds.objExists('spine_04'):
+            cmds.delete('spine_04')
+        cmds.duplicate('DHIhead:spine_04')
+        allHier = cmds.listRelatives('spine_04', allDescendents=True, fullPath=True)
+        for i in allHier:
+            if cmds.objectType(i) != 'joint':
+                cmds.delete(i)
+        bneLst = cmds.listRelatives('spine_05', allDescendents=True, type='joint')
+        bneLst.insert(0, 'spine_05')
+        for num,bone in enumerate(bneLst):
+            length, mfn_mesh1 = self.get_rig_mesh_data(rigHead)
+            bx, by, bz, M1X, M1Z, M1Y, minDistID = self.get_bone_data(bone, length, mfn_mesh1)
+            M2X, M2Z, M2Y = self.get_new_mesh_data(newHead, minDistID)
+            offsetX, offsetY, offsetZ = self.get_vertex_offset(M2X, M2Z, M2Y, M1X, M1Z, M1Y, bx, by, bz)
+            self.set_bone_data(bone, offsetX, offsetY, offsetZ)
+
+    def move_rigged_hierarchy(self):
+        for jnt in ['neck_01', 'FACIAL_C_Neck1Root', 'neck_02', 'FACIAL_C_Neck2Root', 'head', 'FACIAL_C_FacialRoot']:
+            nmeSpcJnt = 'DHIhead:'+jnt
+            xf = cmds.xform(jnt,q=1,ws=1,t=1)
+            cmds.xform(nmeSpcJnt, t=xf, ws=True)
+
+    def offset_rigged_hierarchy(self):
+        jntNum = len(cmds.listAttr('rl4Embedded_{}_rl.jntTranslationOutputs[*]'.format(self.rlName)))-1
+        rlJntDict = OrderedDict()
+        jto = 0
+        while jto < jntNum:
+            jto_ID = 'rl4Embedded_{}_rl.jntTranslationOutputs[{}]'.format(self.rlName, jto)
+            rlJntDict[cmds.connectionInfo(jto_ID, destinationFromSource = 1)[0]]=jto_ID
+            jto = jto+1
+        jntOrderDict = OrderedDict()
+        jntOrderDict = self.getHierarchyPM('spine_04')
+        for k,v in jntOrderDict.items():
+            newJnt = k
+            rigJnt = 'DHIhead:'+k.split('|')[-1]
+            for trs in ['translate']:
+                for axis in 'XYZ':
+                    if rlJntDict.get(rigJnt+'.'+trs+axis):
+                        difVal = self.get_transform_offset(newJnt, rigJnt, trs, axis)
+                        adlName = 'ADL_'+newJnt.split('|')[-1]+'_'+trs+'_'+axis
+                        adlName1 = adlName.replace(":","")
+                        adlName2 = adlName1.replace(".","_")
+                        ADL = cmds.createNode('addDoubleLinear', n=adlName2)
+                        cmds.connectAttr(rlJntDict.get(rigJnt+'.'+trs+axis), ADL+'.input1')
+                        cmds.setAttr(ADL+'.input2', difVal)
+                        cmds.connectAttr(ADL+'.output', rigJnt+'.'+trs+axis, force=True)
+        if cmds.objExists('spine_04'):
+            cmds.delete('spine_04')
+
+def create_ui():
+    if cmds.window("meshSelectorWindow", exists=True):
+        cmds.deleteUI("meshSelectorWindow", window=True)
+    
+    window = cmds.window("meshSelectorWindow", title="Mesh Selector", widthHeight=(300, 410))
+    
+    main_layout = cmds.columnLayout(adjustableColumn=True)
+    
+    row_layout1 = cmds.rowLayout(numberOfColumns=2, columnWidth2=(75, 225), adjustableColumn=2, parent=main_layout)
+    cmds.button(label="OG Mesh", command=lambda x: select_mesh(text_field1), parent=row_layout1)
+    text_field1 = cmds.textField(editable=False, parent=row_layout1)
+    
+    cmds.separator(height=10, parent=main_layout)
+    
+    row_layout2 = cmds.rowLayout(numberOfColumns=2, columnWidth2=(75, 225), adjustableColumn=2, parent=main_layout)
+    cmds.button(label="W Mesh", command=lambda x: select_mesh(text_field2), parent=row_layout2)
+    text_field2 = cmds.textField(editable=False, parent=row_layout2)
+    
+    cmds.separator(height=20, parent=main_layout)
+    
+    row_layout3 = cmds.rowLayout(numberOfColumns=2, columnWidth2=(75, 225), adjustableColumn=2, parent=main_layout)
+    cmds.text(label="RL name", parent=row_layout3)
+    editable_field = cmds.textField(parent=row_layout3)
+    
+    cmds.separator(height=10, parent=main_layout)
+    
+    cmds.button(label="Process", command=lambda x: process_text(text_field1, text_field2, editable_field), parent=main_layout)
+    
+    cmds.separator(height=20, parent=main_layout)
+    
+    instructions = [
+        "1. Select Original Head Mesh then press OG Mesh",
+        "2. Select Wrapped Mesh and then press W Mesh",
+        "3. Find the RL rig logic node and paste the name in the text field",
+        "4. Click process to complete the process"
+    ]
+    for instruction in instructions:
+        cmds.text(label=instruction, align='left', parent=main_layout)
+    
+    cmds.separator(height=20, parent=main_layout)
+    
+    cmds.text(label="Compatible with MH 5.4", align='center', parent=main_layout)
+    cmds.separator(height=20, parent=main_layout)
+    cmds.text(label='<a href="http://www.revoconner.com">www.revoconner.com</a>', hyperlink=True, align='center', parent=main_layout)
+    
+    cmds.showWindow(window)
+
+def select_mesh(text_field, *args):
+    selected = cmds.ls(selection=True, type="transform")
+    
+    if len(selected) == 0:
+        cmds.warning("No mesh selected. Please select a mesh.")
+    elif len(selected) > 1:
+        cmds.warning("Multiple meshes selected. Please select only one mesh.")
+    else:
+        mesh_name = selected[0]
+        cmds.textField(text_field, edit=True, text=mesh_name)
+
+def process_text(text_field1, text_field2, editable_field, *args):
+    og_mesh = cmds.textField(text_field1, query=True, text=True)
+    w_mesh = cmds.textField(text_field2, query=True, text=True)
+    rl_name = cmds.textField(editable_field, query=True, text=True)
+    
+    match = re.search(r'rl4Embedded_(.+?)_rl', rl_name)
+    if match:
+        editable_field_modified = match.group(1)
+    else:
+        cmds.warning("Invalid RL name format. Please ensure it contains 'rl4Embedded_' followed by the desired name and '_rl'.")
+        return
+    
+    try:
+        a = None
+        a = MetaHumanTransfer(og_mesh, w_mesh, editable_field_modified)
+        a.run()
+        cmds.confirmDialog(title='Success', message='MetaHumanTransfer completed successfully.', button=['OK'])
+    except Exception as e:
+        cmds.warning(f"An error occurred: {str(e)}")
+
+create_ui()
