@@ -1,6 +1,6 @@
 # Metahuman Rig Transfer Script
 
-## Untested on metahuman 5.5
+## Untested on metahuman 5.5 and above, feel free to fork and update
 Python script to modify the metahuman rig into a new one for Maya. For unreal use Mesh to Metahuman or houdini.
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE (Outdated)
