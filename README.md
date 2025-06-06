@@ -1,6 +1,6 @@
-# Metahuman Rig Transfer Script
+# Metahuman Rig Transfer Script (deprecated)
+## IMPORTANT NOTE: With the ability to edit DNA files directly in Maya, after the UE5.6 update, this plugin will not get any more updates, as it has been rendered obsolete with the new official pipelines. It works with UE5.4 as of the latest update, future updates of metahuman will not be supported. I will continue to make new projects based on problems I face in my work, and those will always be publicly available free of charge. Thank you all for the massive support and interest in this little project of mine that was my first real experience learning coding. 
 
-## Untested on metahuman 5.5 and above, feel free to fork and update
 Python script to modify the metahuman rig into a new one for Maya. For unreal use Mesh to Metahuman or houdini.
 
 Link to youtube video demo - https://www.youtube.com/watch?v=qF-z1aZQUYE (Outdated)
